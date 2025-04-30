@@ -39,4 +39,6 @@ classDiagram
     User "1" --> "*" Order : places
     Order "*" --> "*" OrderItem : contains
     Product "1" --> "*" OrderItem : part of
+    Category "1" --> "*" Product : classifies
+```
 
