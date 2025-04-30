@@ -1,20 +1,17 @@
-# Order System APi
-
-## Diagrama de Classes
 ```mermaid
 classDiagram
-    class User {
+    class Users {
         +Long id
         +String name
         +String email
     }
 
-    class Category {
+    class Categories {
         +Long id
         +String name
     }
 
-    class Product {
+    class Products {
         +Long id
         +String name
         +String description
@@ -22,23 +19,22 @@ classDiagram
         +int stock
     }
 
-    class Order {
+    class Orders {
         +Long id
         +LocalDateTime createdAt
         +BigDecimal total
         +String status
     }
 
-    class OrderItem {
+    class OrderItems {
         +Long id
         +int quantity
         +BigDecimal unitPrice
         +BigDecimal subtotal
     }
 
-    User "1" --> "*" Order : places
-    Order "*" --> "*" OrderItem : contains
-    Product "1" --> "*" OrderItem : part of
-    Category "1" --> "*" Product : classifies
+    Users "1" --> "*" Orders : places
+    Orders "*" --> "*" OrderItems : contains
+    Products "1" --> "*" OrderItems : part of
+    Categories "1" --> "*" Products : classifies
 ```
-
