@@ -3,41 +3,40 @@
 ## Diagrama de Classes
 ```mermaid
 classDiagram
-    class Usuario {
+    class User {
         +Long id
-        +String nome
+        +String name
         +String email
     }
 
-    class Categoria {
+    class Category {
         +Long id
-        +String nome
+        +String name
     }
 
-    class Produto {
+    class Product {
         +Long id
-        +String nome
-        +String descricao
-        +BigDecimal preco
-        +int estoque
+        +String name
+        +String description
+        +BigDecimal price
+        +int stock
     }
 
-    class Pedido {
+    class Order {
         +Long id
-        +LocalDateTime dataCriacao
+        +LocalDateTime createdAt
         +BigDecimal total
         +String status
     }
 
-    class ItemPedido {
+    class OrderItem {
         +Long id
-        +int quantidade
-        +BigDecimal precoUnitario
+        +int quantity
+        +BigDecimal unitPrice
         +BigDecimal subtotal
     }
 
-    Usuario "1" --> "*" Pedido : realiza
-    Pedido "*" --> "*" ItemPedido : contém
-    Produto "1" --> "*" ItemPedido : é parte de
-    Categoria "1" --> "*" Produto : classifica
-```
+    User "1" --> "*" Order : places
+    Order "*" --> "*" OrderItem : contains
+    Product "1" --> "*" OrderItem : part of
+
