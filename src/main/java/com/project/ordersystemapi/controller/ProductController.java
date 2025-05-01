@@ -29,6 +29,11 @@ public class ProductController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/category/{categoryId}")
+    public List<Product> getProductsByCategory(@PathVariable Long categoryId) {
+        return productRepository.findByCategoryId(categoryId);
+    }
+
     @PostMapping
     public Product createProduct(@RequestBody Product product) {
         return productRepository.save(product);
