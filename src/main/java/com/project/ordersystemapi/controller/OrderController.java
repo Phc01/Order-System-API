@@ -3,18 +3,16 @@ package com.project.ordersystemapi.controller;
 import com.project.ordersystemapi.dto.CreateOrderDTO;
 import com.project.ordersystemapi.dto.OrderItemResponseDTO;
 import com.project.ordersystemapi.dto.OrderResponseDTO;
-import com.project.ordersystemapi.model.Order;
-import com.project.ordersystemapi.model.OrderItem;
-import com.project.ordersystemapi.model.OrderStatus;
-import com.project.ordersystemapi.model.User;
-import com.project.ordersystemapi.model.Product;
+import com.project.ordersystemapi.model.*;
 import com.project.ordersystemapi.repository.OrderRepository;
 import com.project.ordersystemapi.repository.ProductRepository;
 import com.project.ordersystemapi.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.math.BigDecimal;
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,6 +58,7 @@ public class OrderController {
 
         BigDecimal total = itemDTOs.stream()
                 .map(OrderItemResponseDTO::getSubtotal)
+                .filter(java.util.Objects::nonNull)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         return new OrderResponseDTO(
@@ -91,9 +90,7 @@ public class OrderController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<OrderResponseDTO>> getOrderByUser(@PathVariable Long userId) {
-        List<Order> orders = orderRepository.findAll().stream()
-                .filter(orderEntity -> orderEntity.getUser() != null && orderEntity.getUser().getId().equals(userId))
-                        .collect(Collectors.toList());
+        List<Order> orders = orderRepository.findByUserId(userId);
 
         List<OrderResponseDTO> responseDTOs = orders.stream()
                 .map(this::convertToOrderResponseDTO)
@@ -112,25 +109,32 @@ public class OrderController {
         order.setStatus(OrderStatus.PENDING);
 
 
-        List<OrderItem> items = dto.getItems().stream().map(itemDto -> {
-            var product = productRepository.findById(itemDto.getProductId())
-                    .orElseThrow(() -> new RuntimeException("Product not found"));
+        List<OrderItem> orderItems = dto.getItems()
+                .stream().map(orderItemDTO -> {
+                    Product product = productRepository.findById(orderItemDTO.getProductId())
+                            .orElseThrow(() -> new RuntimeException("Product not found with id: " + orderItemDTO.getProductId()));
+
 
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
             orderItem.setProduct(product);
-            orderItem.setQuantity(itemDto.getQuantity());
+            orderItem.setQuantity(orderItemDTO.getQuantity());
             orderItem.setPrice(product.getPrice());
 
             return orderItem;
         }).collect(Collectors.toList());
 
-        order.setItems(items);
+        order.setItems(orderItems);
 
         Order savedOrder = orderRepository.save(order);
 
         OrderResponseDTO responseDTO = convertToOrderResponseDTO(savedOrder);
 
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(savedOrder.getId())
+                .toUri();
         return  ResponseEntity.ok(responseDTO);
     }
 }
