@@ -3,8 +3,7 @@ package com.project.ordersystemapi.controller;
 import com.project.ordersystemapi.dto.CreateUserDTO;
 import com.project.ordersystemapi.dto.UpdateUserDTO;
 import com.project.ordersystemapi.dto.UserResponseDTO;
-import com.project.ordersystemapi.model.User;
-import com.project.ordersystemapi.repository.UserRepository;
+import com.project.ordersystemapi.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -16,73 +15,46 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    // metodo helper de converter User para UserDTO
-    private UserResponseDTO convertToDTO(User user) {
-        return new UserResponseDTO(user.getId(), user.getName(), user.getEmail());
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
-        List<UserResponseDTO> userDTOs = userRepository.findAll()
-                .stream()
-                .map(this::convertToDTO)
-                .toList();
+        List<UserResponseDTO> userDTOs = userService.getAllUsers();
         return ResponseEntity.ok(userDTOs);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
-        return userRepository.findById(id)
-                .map(this::convertToDTO)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        UserResponseDTO userDTO = userService.getUserById(id);
+        return ResponseEntity.ok(userDTO);
     }
 
     @PostMapping
     public ResponseEntity<UserResponseDTO> createUser(@RequestBody CreateUserDTO createUserDTO) {
-        User user = new User();
-        user.setName(createUserDTO.getName());
-        user.setEmail(createUserDTO.getEmail());
-
-        User savedUser = userRepository.save(user);
+        UserResponseDTO savedUser = userService.createUser(createUserDTO);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(savedUser.getId())
                 .toUri();
-        return ResponseEntity.created(location).body(convertToDTO(savedUser));
+        return ResponseEntity.created(location).body(savedUser);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody UpdateUserDTO updateUserDTO) {
-        return userRepository.findById(id).map(existing -> {
-            if (updateUserDTO.getName() != null) {
-                existing.setName(updateUserDTO.getName());
-            }
-            if (updateUserDTO.getEmail() != null) {
-                existing.setEmail(updateUserDTO.getEmail());
-            }
-            User updatedUser = userRepository.save(existing);
-            return ResponseEntity.ok(convertToDTO(updatedUser));
-        }).orElse(ResponseEntity.notFound().build());
+        UserResponseDTO updatedUser = userService.updateUser(id, updateUserDTO);
+        return ResponseEntity.ok(updatedUser);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        if (userRepository.existsById(id)) {
-            userRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+       userService.deleteUser(id);
+       return ResponseEntity.noContent().build();
     }
-
 }
 
