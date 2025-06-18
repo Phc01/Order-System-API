@@ -1,0 +1,15 @@
+services:
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: order_system_postgres
+    environment:
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: root123
+      POSTGRES_DB: order_system
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data: {}
