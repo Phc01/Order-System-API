@@ -90,6 +90,6 @@ No Linux ou macOS:
 ```
 No Windows:
 ```
-gradlew.bat bootRun
+./gradlew bootRun
 ```
 Pronto! A API estará em execução no endereço ```http://localhost:8080```. O perfil de teste do Spring Boot irá popular o banco de dados H2 com dados iniciais.
