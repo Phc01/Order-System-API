@@ -11,7 +11,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/products")
@@ -40,7 +39,7 @@ public class ProductController {
 
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<ProductResponseDTO>> getProductsByCategory(@PathVariable Long categoryId) {
-        if (!categoryRepository.existsById(categoryId)) { // Verifica se a categoria existe
+        if (!categoryRepository.existsById(categoryId)) {
             return ResponseEntity.notFound().build();
         }
         List<ProductResponseDTO> productDTOs = productService.findByCategoryId(categoryId);

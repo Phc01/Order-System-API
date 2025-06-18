@@ -9,9 +9,13 @@ import java.util.List;
 public interface UserService {
 
     List<UserResponseDTO> getAllUsers();
+
     UserResponseDTO getUserById(Long id);
+
     UserResponseDTO createUser(CreateUserDTO createUserDTO);
+
     UserResponseDTO updateUser(Long id, UpdateUserDTO updateUserDTO);
+
     void deleteUser(Long id);
 
 }

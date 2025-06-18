@@ -21,7 +21,6 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-
     @GetMapping
     public ResponseEntity<List<CategoryResponseDTO>> getAllCategories() {
         List<CategoryResponseDTO> categoryDTOs = categoryService.getAllCategories();

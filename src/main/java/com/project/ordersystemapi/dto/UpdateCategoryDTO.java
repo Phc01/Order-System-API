@@ -5,7 +5,7 @@ public class UpdateCategoryDTO {
 
     // Constructor, Getters and setters
 
-    public UpdateCategoryDTO(){
+    public UpdateCategoryDTO() {
     }
 
     public String getName() {

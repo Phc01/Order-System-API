@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
@@ -45,8 +45,7 @@ public class UserServiceImpl implements UserService{
     public UserResponseDTO getUserById(Long id) {
         return userRepository.findById(id)
                 .map(this::convertToDTO)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
 
     @Override
@@ -57,7 +56,8 @@ public class UserServiceImpl implements UserService{
         user.setEmail(createUserDTO.getEmail());
 
         if (userRepository.existsByEmail(createUserDTO.getEmail())) {
-            throw new DataIntegrityViolationException("Email already exists: " + createUserDTO.getEmail());
+            throw new DataIntegrityViolationException("Email already exists: "
+                    + createUserDTO.getEmail());
         }
 
         User savedUser = userRepository.save(user);
@@ -73,14 +73,17 @@ public class UserServiceImpl implements UserService{
 
         boolean updated = false;
 
-        if (updateUserDTO.getName() != null && !updateUserDTO.getName().equals(existingUser.getName())) {
+        if (updateUserDTO.getName() != null && !updateUserDTO.getName()
+                .equals(existingUser.getName())) {
             existingUser.setName(updateUserDTO.getName());
             updated = true;
         }
 
-        if (updateUserDTO.getEmail() != null && !updateUserDTO.getEmail().equals(existingUser.getEmail())) {
+        if (updateUserDTO.getEmail() != null && !updateUserDTO.getEmail()
+                .equals(existingUser.getEmail())) {
             if (userRepository.existsByEmailAndIdNot(updateUserDTO.getEmail(), id)) {
-                throw new DataIntegrityViolationException("Email already exists for another user: " + updateUserDTO.getEmail());
+                throw new DataIntegrityViolationException("Email already exists for another user: "
+                        + updateUserDTO.getEmail());
             }
             existingUser.setEmail(updateUserDTO.getEmail());
             updated = true;

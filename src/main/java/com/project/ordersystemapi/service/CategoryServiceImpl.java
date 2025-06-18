@@ -55,7 +55,8 @@ public class CategoryServiceImpl implements CategoryService {
         category.setName(createCategoryDTO.getName());
 
         if (categoryRepository.existsByName(createCategoryDTO.getName())) {
-            throw new ResourceNotFoundException("Category already exists with name: " + createCategoryDTO.getName());
+            throw new ResourceNotFoundException("Category already exists with name: "
+                    + createCategoryDTO.getName());
         }
 
         Category savedCategory = categoryRepository.save(category);
@@ -70,9 +71,11 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
 
         boolean updated = false;
-        if (updateCategoryDTO.getName() != null && !updateCategoryDTO.getName().equals(existingCategory.getName())) {
+        if (updateCategoryDTO.getName() != null && !updateCategoryDTO.getName()
+                .equals(existingCategory.getName())) {
             if (categoryRepository.existsByName(updateCategoryDTO.getName())) {
-                throw new DataIntegrityViolationException("Category already exists with name: " + updateCategoryDTO.getName());
+                throw new DataIntegrityViolationException("Category already exists with name: "
+                        + updateCategoryDTO.getName());
             }
             existingCategory.setName(updateCategoryDTO.getName());
             updated = true;
