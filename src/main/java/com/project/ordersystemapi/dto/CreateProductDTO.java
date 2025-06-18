@@ -6,7 +6,7 @@ public class CreateProductDTO {
     private String name;
     private String description;
     private BigDecimal price;
-    private int stock;
+    private Integer stock;
     private Long categoryId;
 
     // Constructor and Getters
@@ -38,11 +38,11 @@ public class CreateProductDTO {
         this.price = price;
     }
 
-    public int getStock() {
+    public Integer getStock() {
         return stock;
     }
 
-    public void setStock(int stock) {
+    public void setStock(Integer stock) {
         this.stock = stock;
     }
 
