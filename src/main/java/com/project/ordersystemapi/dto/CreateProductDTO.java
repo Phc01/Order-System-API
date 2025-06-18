@@ -9,10 +9,7 @@ public class CreateProductDTO {
     private Integer stock;
     private Long categoryId;
 
-    // Constructor and Getters
-
-    public CreateProductDTO() {
-    }
+    // Constructor, Getters and Setters
 
     public String getName() {
         return name;
